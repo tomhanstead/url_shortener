@@ -29,13 +29,16 @@ This Laravel application provides a service for encoding and mapping URLs. The m
    ```env
    DB_CONNECTION=sqlite
    ```
-
-4. Run migrations:
+4. Generate App Key
+  ```bash
+   php artisan key:generate
+  ```
+5. Run migrations:
    ```bash
    php artisan migrate
    ```
 
-5. Start the development server:
+6. Start the development server:
    ```bash
    php artisan serve
    ```
