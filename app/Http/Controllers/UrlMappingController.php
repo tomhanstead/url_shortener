@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\UrlMappingServiceContract;
 use App\Http\Requests\UrlEncodeDecodeRequest;
 use App\Http\Resources\UrlMappingResource;
-use App\Models\UrlMapping;
-use App\Services\UrlMappingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -13,8 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UrlMappingController extends Controller
 {
-    private UrlMappingService $urlMappingService;
-    public function __construct(UrlMappingService $urlMappingService)
+    private UrlMappingServiceContract $urlMappingService;
+
+    public function __construct(UrlMappingServiceContract $urlMappingService)
     {
         $this->urlMappingService = $urlMappingService;
     }
@@ -22,10 +22,10 @@ class UrlMappingController extends Controller
     /**
      * Handles the encoding of a URL and returns a short key upon success.
      *
-     * @param UrlEncodeDecodeRequest $request The request instance containing the URL to be encoded.
-     * @return UrlMappingResource|JsonResponse A JSON response containing the short key or an error message.
+     * @param  UrlEncodeDecodeRequest  $request  The request instance containing the URL to be encoded.
+     * @return JsonResponse A JSON response containing the short key or an error message.
      */
-    public function encode(UrlEncodeDecodeRequest $request): UrlMappingResource|JsonResponse
+    public function encode(UrlEncodeDecodeRequest $request): JsonResponse
     {
         try {
             $validatedRequest = $request->validated();
@@ -47,11 +47,12 @@ class UrlMappingController extends Controller
     /**
      * Decodes a shortened URL to retrieve the original URL.
      *
-     * @param UrlEncodeDecodeRequest $request The incoming request object containing the URL to decode.
-     * @return UrlMappingResource|JsonResponse The decoded URL resource or an error response in case of failure.
+     * @param  UrlEncodeDecodeRequest  $request  The incoming request object containing the URL to decode.
+     * @return JsonResponse The decoded URL resource or an error response in case of failure.
+     *
      * @throws \Exception If an error occurs during the decoding process.
      */
-    public function decode(UrlEncodeDecodeRequest $request): UrlMappingResource|JsonResponse
+    public function decode(UrlEncodeDecodeRequest $request): JsonResponse
     {
         try {
             $validatedRequest = $request->validated();
@@ -59,6 +60,7 @@ class UrlMappingController extends Controller
             $shortUrl = $validatedRequest['url'];
 
             $originalUrl = $this->urlMappingService->retrieveShortUrl($shortUrl);
+
             return response()->json(new UrlMappingResource($originalUrl), Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);

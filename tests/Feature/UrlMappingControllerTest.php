@@ -26,7 +26,7 @@ class UrlMappingControllerTest extends TestCase
     {
         $mapping = UrlMapping::factory()->create(['url' => 'https://example.com', 'short_key' => 'abc123']);
 
-        $response = $this->postJson('/api/decode', ['url' => config('app.url') . '/abc123']);
+        $response = $this->postJson('/api/decode', ['url' => config('app.url').'/abc123']);
 
         $response->assertStatus(200)
             ->assertJsonFragment(['original_url' => $mapping->url]);
@@ -44,14 +44,14 @@ class UrlMappingControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJsonFragment([
-                'short_url' => config('app.url') . '/abc123',
+                'short_url' => config('app.url').'/abc123',
             ]);
     }
 
     /** @test */
     public function it_returns_an_error_if_short_url_does_not_exist()
     {
-        $response = $this->postJson('/api/decode', ['url' => config('app.url') . '/nonexistent']);
+        $response = $this->postJson('/api/decode', ['url' => config('app.url').'/nonexistent']);
 
         $response->assertStatus(404)
             ->assertJsonFragment([

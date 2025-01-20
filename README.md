@@ -1,49 +1,178 @@
-# Url Mapping Service
+# URL Mapping Service
 
-This Laravel application provides a service for encoding and mapping URLs. The main functionality includes generating short keys for long URLs and returning appropriate responses using HTTP standards.
+This Laravel application provides a service for encoding and decoding URLs. The main functionality includes generating short keys for long URLs and mapping them to their original counterparts using RESTful APIs and robust architecture.
+
+
+---
+
 
 ## Features
 
-- **URL Encoding**: Converts a given long URL into a short key.
-- **Error Handling**: Handles exceptions and returns appropriate HTTP status codes.
-- **RESTful API**: Designed with REST principles for scalable and maintainable services.
+- **URL Encoding** : Converts a long URL into a short, unique key.
+
+- **URL Decoding** : Retrieves the original URL from a short key.
+
+- **Error Handling** : Handles exceptions gracefully and returns proper HTTP status codes.
+
+- **RESTful API** : Built with REST principles for scalability and maintainability.
+
+- **Validation** : Ensures the validity of URLs using request validation.
+
+
+---
+
+
+## Table of Contents
+
+- [Installation](#installation)
+
+- [Getting Started](#getting-started)
+
+- [Backend Design and Architecture](#backend-design-and-architecture)
+    - [SOLID Principles](#solid-principles)
+    - [Dependency Injection](#dependency-injection)
+    - [Service Layer](#service-layer)
+    - [PSR-12](#psr-12)
+    - [Rate Limiting](#rate-limiting)
+
+- [Code Structure](#code-structure)
+    - [Controllers](#controllers)
+    - [Services](#services)
+    - [Resources](#resources)
+    - [Requests](#requests)
+    - [Models](#models)
+
+- [API Endpoints](#api-endpoints)
+    - [Encode URL](#encode-url)
+    - [Decode URL](#decode-url)
+
+- [Testing](#testing)
+
+- [Technologies Used](#technologies-used)
+
+
+---
+
 
 ## Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/tomhanstead/url_shortener.git
-   cd url_shortener
-   ```
+1. **Clone the Repository:**
 
-2. Install dependencies:
-   ```bash
-   composer install
-   ```
+```bash
+git clone https://github.com/tomhanstead/url_shortener.git
+cd url_shortener
+```
 
-3. Set up environment variables:
-   ```bash
-   cp .env.example .env
-   ```
-   Update the `.env` file with your database credentials and ensure the following settings for SQLite:
-   ```env
-   DB_CONNECTION=sqlite
-   ```
-4. Generate App Key
-  ```bash
-   php artisan key:generate
-  ```
-5. Run migrations:
-   ```bash
-   php artisan migrate
-   ```
+2. **Install Dependencies:**
 
-6. Start the development server:
-   ```bash
-   php artisan serve
-   ```
+```bash
+composer install
+```
 
-## Endpoints
+3. **Set Up Environment Variables:**
+
+```bash
+cp .env.example .env
+```
+Update the `.env` file with your database credentials. Example for SQLite:
+
+```env
+DB_CONNECTION=sqlite
+DB_DATABASE=/absolute/path/to/database.sqlite
+```
+
+4. **Generate Application Key:**
+
+```bash
+php artisan key:generate
+```
+
+5. **Run Migrations:**
+
+```bash
+php artisan migrate
+```
+
+6. **Start the Development Server:**
+
+```bash
+php artisan serve
+```
+
+
+---
+
+
+## Getting Started
+
+### Backend Design and Architecture
+
+#### SOLID Principles
+
+The application adheres to SOLID principles:
+
+- **Single Responsibility Principle** : Each class focuses on a specific functionality (e.g., `UrlMappingService` handles mapping logic).
+
+- **Open/Closed Principle** : Services and handlers are extendable without modifying existing code.
+
+- **Dependency Inversion Principle** : Classes like `UrlMappingController` rely on abstractions instead of concrete implementations.
+
+#### Dependency Injection
+`UrlMappingServiceContract` is injected into the `UrlMappingController` to decouple service logic and enable testability.
+#### Service Layer
+
+Encapsulates business logic for URL encoding and decoding, ensuring a clean separation of concerns.
+
+#### PSR-12
+This assignment follows the PSR-12 coding style, ensuring consistent code styling. I used Laravel Pint to check and fix code styles.
+```bash
+  ./vendor/bin/pint // you can also use --fix to automatically fix any issues.
+```
+### Rate Limiting
+To safeguard the server from excessive API requests and ensure fair usage, rate limiting has been implemented. This restricts each user or IP address to 60 requests per minute.
+
+
+---
+
+
+## Code Structure
+
+### Controllers
+
+- **`UrlMappingController`** :
+    - Handles incoming HTTP requests for encoding and decoding URLs.
+
+    - Interacts with the service layer for business logic.
+
+    - Returns consistent, structured JSON responses.
+
+### Services
+
+- **`UrlMappingService`** :
+    - Implements `UrlMappingServiceContract`.
+
+    - Contains the core logic for mapping URLs and generating short keys.
+
+### Resources
+
+- **`UrlMappingResource`** :
+    - Transforms `UrlMapping` models into a consistent API response structure.
+
+### Requests
+
+- **`UrlEncodeDecodeRequest`** :
+    - Validates incoming requests for encoding and decoding.
+
+### Models
+
+- **`UrlMapping`** :
+    - Represents the database table for storing URLs and their short keys.
+
+
+---
+
+
+## API Endpoints
 
 ### Encode URL
 **POST** `/api/encode`
@@ -96,22 +225,34 @@ Response:
   }
   ```
 
-## Code Structure
 
-- **Controller**: `UrlMappingController` handles requests and responses.
-- **Service**: `UrlMappingService` contains the business logic for URL encoding.
-- **Resource**: `UrlMappingResource` ensures transforming models into structured JSON responses. It also ensures consistency in API responses.
-- **Request Validation**: `UrlEncodingRequest` ensures input validation.
-- **Model**: `UrlMapping` represents the database table for storing URLs and their mappings.
-## Unit Test
-To test the api please run:
-```
+---
+
+
+## Testing
+
+Run the test suite:
+
+
+```bash
 php artisan test
 ```
 
+
+---
+
+
 ## Technologies Used
 
-- **Framework**: Laravel 11
-- **Language**: PHP 8.3+
-- **Database**: SQLite
-- **Testing**: PHPUnit
+- **Framework** : Laravel 10
+
+- **Language** : PHP 8.3+
+
+- **Database** : SQLite
+
+- **Testing** : PHPUnit
+
+- **Caching** : Database
+
+
+---

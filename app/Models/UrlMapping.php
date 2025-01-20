@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class UrlMapping extends Model
 {
     use HasFactory;
+
     protected $fillable = ['url', 'short_key'];
 }

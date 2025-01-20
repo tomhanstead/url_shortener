@@ -11,7 +11,6 @@ class User extends Authenticatable
 {
     protected $table = 'users';
 
-
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 

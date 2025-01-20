@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use App\Contracts\UrlMappingServiceContract;
 use App\Models\UrlMapping;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-class UrlMappingService
+class UrlMappingService implements UrlMappingServiceContract
 {
     private CacheRepository $cache;
 
@@ -21,13 +22,14 @@ class UrlMappingService
      * Maps a given original URL to a shortened URL if it does not already exist,
      * or retrieves the existing mapping from the cache or database.
      *
-     * @param string $originalUrl The original URL to map.
+     * @param  string  $originalUrl  The original URL to map.
      * @return UrlMapping The UrlMapping instance containing the mapped data.
+     *
      * @throws \Exception|\Psr\SimpleCache\InvalidArgumentException If an error occurs during the mapping or database process.
      */
     public function mapUrl(string $originalUrl): UrlMapping
     {
-        $cacheKey = 'url_mapping_' . md5($originalUrl);
+        $cacheKey = 'url_mapping_'.md5($originalUrl);
 
         // Check cache first
         if ($this->cache->has($cacheKey)) {
@@ -46,7 +48,7 @@ class UrlMappingService
 
             return $mapping;
         } catch (\Exception $e) {
-            Log::error('Error mapping URL: ' . $e->getMessage());
+            Log::error('Error mapping URL: '.$e->getMessage());
             throw $e;
         }
     }
@@ -56,14 +58,15 @@ class UrlMappingService
      * the cache if available, otherwise queries the database and stores the result
      * in the cache for later use.
      *
-     * @param string $shortUrl The shortened URL to retrieve the mapping for.
+     * @param  string  $shortUrl  The shortened URL to retrieve the mapping for.
      * @return UrlMapping The UrlMapping instance containing the corresponding data.
+     *
      * @throws \Exception If the shortened URL cannot be found or decoded.
      */
     public function retrieveShortUrl(string $shortUrl): UrlMapping
     {
         $shortKey = ltrim(parse_url($shortUrl, PHP_URL_PATH), '/');
-        $cacheKey = 'short_key_' . $shortKey;
+        $cacheKey = 'short_key_'.$shortKey;
 
         // Check cache first
         if ($this->cache->has($cacheKey)) {
@@ -79,10 +82,10 @@ class UrlMappingService
 
             return $mapping;
         } catch (ModelNotFoundException $e) {
-            Log::warning('Short URL not found: ' . $shortUrl);
+            Log::warning('Short URL not found: '.$shortUrl);
             throw new \Exception('Short URL not found.');
         } catch (\Exception $e) {
-            Log::error('Error retrieving short URL: ' . $e->getMessage());
+            Log::error('Error retrieving short URL: '.$e->getMessage());
             throw new \Exception('Failed to decode URL.');
         }
     }

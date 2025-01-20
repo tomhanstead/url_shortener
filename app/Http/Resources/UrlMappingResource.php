@@ -16,7 +16,7 @@ class UrlMappingResource extends JsonResource
     {
         return [
             'original_url' => $this->url,
-            'short_url' => config('app.url') . '/' . $this->short_key,
+            'short_url' => config('app.url').'/'.$this->short_key,
         ];
     }
 }

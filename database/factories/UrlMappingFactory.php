@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 class UrlMappingFactory extends Factory
 {
     protected $model = UrlMapping::class;
+
     /**
      * Define the model's default state.
      *
