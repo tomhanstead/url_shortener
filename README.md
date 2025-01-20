@@ -109,7 +109,7 @@ php artisan serve
 
 #### SOLID Principles
 
-The application adheres to SOLID principles:
+The application adheres to SOLID OOP principles:
 
 - **Single Responsibility Principle** : Each class focuses on a specific functionality (e.g., `UrlMappingService` handles mapping logic).
 
